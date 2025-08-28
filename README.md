@@ -1,0 +1,21 @@
+# Used Techniques
+
+- Hashicorp Vault for secret storage
+- Gitlab CI/CD pipelines:
+  - templated pipelines (for reusing)
+  - pipelines acquiring a temporary JWT token each time being run, from Hashicorp Vault to get registry credentials
+- Personal K8s single node cluster (k3s actually) with ingress configured pointing to qurix.dev domain and all subdomains
+- Helm:
+  - Deployment library chart that's used in another project: web-server example with it's own helm chart, that's using deployment library chart
+  - Pipelines ensuring library chart is built and stored into oci capable registry in own Gitlab, tagging with identical tag that's in Chart.yml
+  - Webserver chart: utilizing configmap checksum method to trigger new replicaset when configmap updates
+- Webserver example:
+  - Example working expense calculator with scalable front-end (replicas) based on NextJS React framework
+  - Frontend showcasing an ENV var example that's read from a configmap and displaying it's value - different per environment
+  - Development and Production lifecycles with on-demand environments when a MR (same as PR) was created, test environment automatically available at (example: https://webserver-mr-8.qurix.dev/ for review). Environment removed once MR is merged/closed.
+  - Production release control with manual version tagging
+- ArgoCD:
+  - root application (app of apps)
+  - separate applications per environment + preview - all of which created by ApplicationSet 
+  - argocd image updater with semantic version bump (automatic)
+  - generators: list generator for deployments per-environment. PR generator - for on-demand, preview environment
